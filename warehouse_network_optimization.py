@@ -12,7 +12,7 @@
 import pulp as pl
 import pandas as pd
 import matplotlib.pyplot as plt
-
+import pprint
 
 dpi = 136
 fig_x = 8
@@ -298,6 +298,13 @@ distance = {(1,1):374,(1,2):2041,(1,3):177,(1,4):1742,(1,5):2777,(1,7):1550,(1,8
             (25,194):1884,(25,195):543,(25,196):836,(25,197):464,(25,198):674,(25,199):1175,(25,200):1037}
 
 
+
+def print_dict(data):
+    """ PrettyPrint the data """
+    pp = pprint.PrettyPrinter(indent=4)
+    pp.pprint(data)
+
+
 def optimal_location(num_warehouses=1,
                      distance_ranges=None,
                      plot=False):
@@ -419,9 +426,13 @@ def optimal_location(num_warehouses=1,
     df_cu['distance_range'] = pd.cut(df_cu['Distance'], bins=distance_ranges, labels=labels)
     
     total_demand = sum(df_cu['Customer Demand'])
+    demand_perc_by_ranges = {}
     for band in labels:
-        perc_of_demand_in_band = sum(df_cu[df_cu['distance_range']== band]['Customer Demand'])*100 / total_demand
-        print(f'% of demand in range {distance_ranges[band-1]:5} - {distance_ranges[band]:5}: {round(perc_of_demand_in_band, 0):>3}')
+        perc_of_demand_in_band = sum(df_cu[df_cu['distance_range']== band]['Customer Demand']) / total_demand
+        distance_range_lower_limit = distance_ranges[band-1]
+        distance_range_upper_limit = distance_ranges[band]
+        print(f'% of demand in range {distance_range_lower_limit:5} - {distance_range_upper_limit:5}: {round(perc_of_demand_in_band * 100, 0):>3}')
+        demand_perc_by_ranges[(distance_range_lower_limit, distance_range_upper_limit)] = perc_of_demand_in_band
 
     print(f"Most distant customer is at {df_cu['Distance'].max()}")
 
@@ -454,5 +465,6 @@ def optimal_location(num_warehouses=1,
             'avg_weighted_distance': avg_weighted_distance,
             'active_warehouses_id': active_warehouses,
             'active_warehouses_name': [warehouses[w][0] for w in active_warehouses],
-            'most_distant_customer': df_cu['Distance'].max()
+            'most_distant_customer': df_cu['Distance'].max(),
+            'demand_perc_by_ranges': demand_perc_by_ranges
             }
