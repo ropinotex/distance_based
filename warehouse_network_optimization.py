@@ -1,3 +1,14 @@
+# ==============================================================================
+# description     :Optimization model example for distance based approach
+# author          :Roberto Pinto
+# date            :2022.03.22
+# version         :1.0
+# notes           :This software is meant for teaching purpose only and it is provided as-is.
+#                  The model is inspired by the book Watson, M., Lewis, S., Cacioppi, P., Jayaraman, J. (2013)
+#                  Supply Chain Network Design, Pearson. All the data has been taken from the book
+#                  The software is provided as-is, with no guarantee by the author
+# ==============================================================================
+
 import pulp as pl
 import pandas as pd
 import matplotlib.pyplot as plt
